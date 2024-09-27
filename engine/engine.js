@@ -181,7 +181,7 @@ function engineInit(appInit, appUpdate, appUpdatePost, appRender, appRenderPost)
 
     //tileImage.src = 'tiles.png';
     tileImage.src = 
-`https://peinguy.github.io/SpaceHuggers/manualback.png`;
+`https://peinguy.github.io/SpaceHuggers/fin.png`;
 }
 
 function engineUpdateObjects()
