@@ -231,13 +231,13 @@ class Character extends GameObject
         
         const bodyPos = this.pos.add(vec2(0,-.1+.06*Math.sin(this.walkCyclePercent*PI)).scale(sizeScale));
         drawTile(bodyPos, vec2(sizeScale), this.tileIndex, this.tileSize, color, this.angle, this.mirror, additive);
-        drawTile(this.fpos.add(vec2(this.mirror ? -1 : 1,.28).scale(sizeScale).rotate(-this.angle)),vec2(sizeScale/2),this.headTile,vec2(8), color,this.angle,this.mirror, additive);
+        drawTile(this.fpos.add(vec2(this.mirror ? -.15 : .15,.28).scale(sizeScale).rotate(-this.angle)),vec2(sizeScale/2),this.headTile,vec2(8), color,this.angle,this.mirror, additive);
 
         //for(let i = this.grenadeCount; i--;)
         //    drawTile(bodyPos, vec2(.5), 5, vec2(8), new Color, this.angle, this.mirror, additive);
 
         const blinkScale = this.canBlink ? this.isDead() ? .3: .5 + .5*Math.cos(this.blinkTimer.getPercent()*PI*2) : 1;
-            drawTile(this.fpos.add(vec2(this.mirror ? -1 : 1,.28).scale(sizeScale).rotate(-this.angle)),vec2(sizeScale/2, blinkScale*sizeScale/2),this.headTile+1,vec2(8), eyeColor, this.angle, this.mirror, this.additiveColor);
+            drawTile(this.fpos.add(vec2(this.mirror ? -.15 : .15,.28).scale(sizeScale).rotate(-this.angle)),vec2(sizeScale/2, blinkScale*sizeScale/2),this.headTile+1,vec2(8), eyeColor, this.angle, this.mirror, this.additiveColor);
     }
 
     damage(damage, damagingObject)
