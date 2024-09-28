@@ -10,7 +10,7 @@
 
 'use strict';
 
-//const debug = 1;
+const debug = 0;
 const enableAsserts = 1;
 const debugPointSize = .5;
 
