@@ -180,7 +180,8 @@ const propType_barrel_metal         = 5;
 const propType_barrel_highExplosive = 6;
 const propType_rock                 = 7;
 const propType_rock_lava            = 8;
-const propType_count                = 9;
+const propType_barrel_nuke          = 9;
+const propType_count                = 10;
 
 class Prop extends GameObject 
 {
@@ -238,6 +239,13 @@ class Prop extends GameObject
             this.tileIndex = 17;
             this.color = new Color(0,.6,1);
             health = .01;
+        }
+	else if (this.type == propType_barrel_nuke)
+        {
+            this.tileIndex = 17;
+            this.color = new Color(1,0,1);
+	    this.explosionSize = 8;
+            health = 10;
         }
         else if (this.type == propType_rock || this.type == propType_rock_lava)
         {
