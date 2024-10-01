@@ -358,12 +358,13 @@ class Character extends GameObject
 
 ///////////////////////////////////////////////////////////////////////////////
 
-const type_weak   = 0;
+const type_weak   = 5;
 const type_normal = 1;
 const type_strong = 2;
 const type_elite  = 3;
 const type_grenade= 4;
-const type_count  = 5;
+const type_ray    = 0;
+const type_count  = 6;
 
 function alertEnemies(pos, playerPos)
 {
@@ -385,6 +386,8 @@ class Enemy extends Character
         this.holdJumpTimer = new Timer;
         this.shootTimer = new Timer;
         this.maxVisionRange = 12;
+	
+	let wtype = 1;
 
         this.type = randSeeded()**3*min(level+1,type_count)|0;
 
@@ -417,7 +420,14 @@ class Enemy extends Character
             this.grenadeCount = 3;
             this.canBurn = 0;
         }
-
+	else if (this.type == type_ray)
+        {
+            this.color = new Color(1,.6,0);
+            this.eyeColor = new Color(1,1,1);
+	    wtype = 2;
+	    health=1;
+        }
+	
         if (this.isBig = randSeeded() < .05)
         {
             // chance of large enemy with extra health
@@ -432,7 +442,7 @@ class Enemy extends Character
         this.color = this.color.mutate();
         this.mirror = rand() < .5;
 
-        new Weapon(this.pos, this);
+        new Weapon(this.pos, this, wtype);
          --levelEnemyCount;
 
         this.sightCheckFrame = rand(9)|0;
