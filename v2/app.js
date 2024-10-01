@@ -18,6 +18,14 @@ const team_enemy = 2;
 
 let updateWindowSize, renderWindowSize, gameplayWindowSize;
 
+async function PS(){
+	let PressStart = new FontFace("Press Start", "url(prstartk.ttf)");
+	await PressStart.load();
+	document.fonts.add(PressStart);
+}
+
+PS();
+
 engineInit(
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -189,17 +197,17 @@ engineInit(
     const p = percent(gameTimer.get(), 8, 10);
 
     //mainContext.globalCompositeOperation = 'difference';
-    mainContext.fillStyle = new Color(0,0,0,p).rgba();
+
+mainContext.fillStyle = new Color(0,0,0,p).rgba();
     if (p > 0)
     {
         //mainContext.fillStyle = (new Color).setHSLA(time/3,1,.5,p).rgba();
-        mainContext.font = '1.5in impact';
+        mainContext.font = '70px "Press Start"';
         mainContext.fillText('SPACE HUGGERS REMAKE', mainCanvas.width/2, 140);
     }
 
-    mainContext.font = '.5in impact';
+    mainContext.font = '35px "Press Start"';
     p > 0 && mainContext.fillText('A JS13K Game by Frank Force, Drass Mangy, and WM',mainCanvas.width/2, 210);
-
     // check if any enemies left
     let enemiesCount = 0;
     for (const o of engineCollideObjects)
