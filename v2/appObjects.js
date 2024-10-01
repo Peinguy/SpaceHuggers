@@ -364,7 +364,7 @@ class Checkpoint extends GameObject
 class Grenade extends GameObject
 {
     constructor(pos) 
-    {
+    {	
         super(pos, vec2(.2), 5, vec2(8));
 
         this.health = this.healthMax = 1e3;
@@ -413,9 +413,14 @@ class Grenade extends GameObject
 
 class Weapon extends EngineObject 
 {
-    constructor(pos, parent) 
+    constructor(pos, parent, type=1) 
     { 
-        super(pos, vec2(.6), 4, vec2(8));
+	
+	if (type == 2) {
+	super(pos, vec2(1.2,.6), 10, vec2(16,8));
+	}else{
+	super(pos, vec2(.6), 4, vec2(8));
+	}
 
         // weapon settings
         this.isWeapon = 1;
