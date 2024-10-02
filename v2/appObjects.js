@@ -415,9 +415,11 @@ class Weapon extends EngineObject
 {
     constructor(pos, parent, type=1) 
     { 
-	
+	let off = .55
+
 	if (type == 2) {
 	super(pos, vec2(1.2,.6), 10, vec2(16,8));
+	off = .8
 	}else{
 	super(pos, vec2(.6), 4, vec2(8));
 	}
@@ -441,7 +443,8 @@ class Weapon extends EngineObject
         this.renderOrder = parent.renderOrder+1;
 
         parent.weapon = this;
-        parent.addChild(this, this.localOffset = vec2(.55,0));
+	this.type = type;
+        parent.addChild(this, this.localOffset = vec2(off,0));
     }
 
     update()
