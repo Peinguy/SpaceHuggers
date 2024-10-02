@@ -358,12 +358,13 @@ class Character extends GameObject
 
 ///////////////////////////////////////////////////////////////////////////////
 
-const type_weak   = 0;
+const type_weak   = 5;
 const type_normal = 1;
 const type_strong = 2;
 const type_elite  = 3;
 const type_grenade= 4;
-const type_count  = 5;
+const type_ray    = 0;
+const type_count  = 6;
 
 function alertEnemies(pos, playerPos)
 {
@@ -385,6 +386,8 @@ class Enemy extends Character
         this.holdJumpTimer = new Timer;
         this.shootTimer = new Timer;
         this.maxVisionRange = 12;
+	
+	this.wtype = 1;
 
         this.type = randSeeded()**3*min(level+1,type_count)|0;
 
@@ -417,7 +420,15 @@ class Enemy extends Character
             this.grenadeCount = 3;
             this.canBurn = 0;
         }
-
+	else if (this.type == type_ray)
+        {
+            this.color = new Color(1,.6,0);
+            this.eyeColor = new Color(1,1,1);
+	    this.wtype = 2;
+	    this.maxVisionRange = 10;
+	    health=1;
+        }
+	
         if (this.isBig = randSeeded() < .05)
         {
             // chance of large enemy with extra health
@@ -432,7 +443,7 @@ class Enemy extends Character
         this.color = this.color.mutate();
         this.mirror = rand() < .5;
 
-        new Weapon(this.pos, this);
+        new Weapon(this.pos, this, this.wtype);
          --levelEnemyCount;
 
         this.sightCheckFrame = rand(9)|0;
@@ -464,8 +475,8 @@ class Enemy extends Character
                 // check range
                 if (player && !player.isDead())
                 if (sawRecently || this.getMirrorSign() == sign(player.pos.x - this.pos.x))
-                if (sawRecently || abs(player.pos.x - this.pos.x) > abs(player.pos.y - this.pos.y) ) // 45 degree slope
-                if (this.pos.distanceSquared(player.pos) < visionRangeSquared)
+		if (sawRecently || abs(player.pos.x - this.pos.x) > abs(player.pos.y - this.pos.y) ) // 45 degree slope
+		if (this.pos.distanceSquared(player.pos) < visionRangeSquared)
                 {
                     const raycastHit = tileCollisionRaycast(this.pos, player.pos);
                     if (!raycastHit)
@@ -476,7 +487,7 @@ class Enemy extends Character
                     }
                     debugAI && debugLine(this.pos, player.pos, '#f00',.1)
                     debugAI && raycastHit && debugPoint(raycastHit, '#ff0',.1)
-                }
+		}
             }
 
             if (sawRecently)
@@ -485,6 +496,8 @@ class Enemy extends Character
                 alertEnemies(this.pos, this.sawPlayerPos);
             }
         }
+	
+	
 
         this.pressedDodge = this.climbingWall = this.pressingThrow = 0;
         
@@ -526,6 +539,9 @@ class Enemy extends Character
             
             const timeSinceSawPlayer = this.sawPlayerTimer.get();
             this.weapon.localAngle *= .8;
+	    if (this.weapon.type == 2) {
+		this.weapon.localAngle *= 0;
+	    } 
             if (this.reactionTimer.active())
             {
                 // just saw player for first time, act surprised
@@ -610,6 +626,9 @@ class Enemy extends Character
                 this.moveInput.x = randSign()*1e-9; // hack: look in a direction
 
             this.weapon.localAngle = lerp(.1, .7, this.weapon.localAngle);
+	    if (this.weapon.type == 2) {
+		this.weapon.localAngle *= 0;
+	    } 
             this.reactionTimer.unset();
         }
 
