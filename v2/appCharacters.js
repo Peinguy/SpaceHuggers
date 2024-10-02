@@ -387,7 +387,7 @@ class Enemy extends Character
         this.shootTimer = new Timer;
         this.maxVisionRange = 12;
 	
-	let wtype = 1;
+	this.wtype = 1;
 
         this.type = randSeeded()**3*min(level+1,type_count)|0;
 
@@ -424,7 +424,8 @@ class Enemy extends Character
         {
             this.color = new Color(1,.6,0);
             this.eyeColor = new Color(1,1,1);
-	    wtype = 2;
+	    this.wtype = 2;
+	    this.maxVisionRange = 10;
 	    health=1;
         }
 	
@@ -442,7 +443,7 @@ class Enemy extends Character
         this.color = this.color.mutate();
         this.mirror = rand() < .5;
 
-        new Weapon(this.pos, this, wtype);
+        new Weapon(this.pos, this, this.wtype);
          --levelEnemyCount;
 
         this.sightCheckFrame = rand(9)|0;
@@ -474,8 +475,8 @@ class Enemy extends Character
                 // check range
                 if (player && !player.isDead())
                 if (sawRecently || this.getMirrorSign() == sign(player.pos.x - this.pos.x))
-                if (sawRecently || abs(player.pos.x - this.pos.x) > abs(player.pos.y - this.pos.y) ) // 45 degree slope
-                if (this.pos.distanceSquared(player.pos) < visionRangeSquared)
+		if (sawRecently || abs(player.pos.x - this.pos.x) > abs(player.pos.y - this.pos.y) ) // 45 degree slope
+		if (this.pos.distanceSquared(player.pos) < visionRangeSquared)
                 {
                     const raycastHit = tileCollisionRaycast(this.pos, player.pos);
                     if (!raycastHit)
@@ -486,7 +487,7 @@ class Enemy extends Character
                     }
                     debugAI && debugLine(this.pos, player.pos, '#f00',.1)
                     debugAI && raycastHit && debugPoint(raycastHit, '#ff0',.1)
-                }
+		}
             }
 
             if (sawRecently)
@@ -495,6 +496,8 @@ class Enemy extends Character
                 alertEnemies(this.pos, this.sawPlayerPos);
             }
         }
+	
+	
 
         this.pressedDodge = this.climbingWall = this.pressingThrow = 0;
         
@@ -536,6 +539,9 @@ class Enemy extends Character
             
             const timeSinceSawPlayer = this.sawPlayerTimer.get();
             this.weapon.localAngle *= .8;
+	    if (this.weapon.type == 2) {
+		this.weapon.localAngle *= 0;
+	    } 
             if (this.reactionTimer.active())
             {
                 // just saw player for first time, act surprised
@@ -620,6 +626,9 @@ class Enemy extends Character
                 this.moveInput.x = randSign()*1e-9; // hack: look in a direction
 
             this.weapon.localAngle = lerp(.1, .7, this.weapon.localAngle);
+	    if (this.weapon.type == 2) {
+		this.weapon.localAngle *= 0;
+	    } 
             this.reactionTimer.unset();
         }
 
