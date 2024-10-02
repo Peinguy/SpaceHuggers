@@ -180,7 +180,8 @@ const propType_barrel_metal         = 5;
 const propType_barrel_highExplosive = 6;
 const propType_rock                 = 7;
 const propType_rock_lava            = 8;
-const propType_count                = 9;
+const propType_barrel_nuke          = 9;
+const propType_count                = 10;
 
 class Prop extends GameObject 
 {
@@ -238,6 +239,13 @@ class Prop extends GameObject
             this.tileIndex = 17;
             this.color = new Color(0,.6,1);
             health = .01;
+        }
+	else if (this.type == propType_barrel_nuke)
+        {
+            this.tileIndex = 17;
+            this.color = new Color(1,0,1);
+	    this.explosionSize = 8;
+            health = 10;
         }
         else if (this.type == propType_rock || this.type == propType_rock_lava)
         {
@@ -356,7 +364,7 @@ class Checkpoint extends GameObject
 class Grenade extends GameObject
 {
     constructor(pos) 
-    {
+    {	
         super(pos, vec2(.2), 5, vec2(8));
 
         this.health = this.healthMax = 1e3;
@@ -405,9 +413,16 @@ class Grenade extends GameObject
 
 class Weapon extends EngineObject 
 {
-    constructor(pos, parent) 
+    constructor(pos, parent, type=1) 
     { 
-        super(pos, vec2(.6), 4, vec2(8));
+	let off = .55
+
+	if (type == 2) {
+	super(pos, vec2(1.2,.6), 10, vec2(16,8));
+	off = .8
+	}else{
+	super(pos, vec2(.6), 4, vec2(8));
+	}
 
         // weapon settings
         this.isWeapon = 1;
@@ -428,7 +443,8 @@ class Weapon extends EngineObject
         this.renderOrder = parent.renderOrder+1;
 
         parent.weapon = this;
-        parent.addChild(this, this.localOffset = vec2(.55,0));
+	this.type = type;
+        parent.addChild(this, this.localOffset = vec2(off,0));
     }
 
     update()
