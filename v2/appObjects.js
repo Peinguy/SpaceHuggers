@@ -463,6 +463,7 @@ class Weapon extends EngineObject
 
         if (this.triggerIsDown)
         {
+	if (this.type == 1){
             // slow down enemy bullets
             const speed = bulletSpeed * (this.parent.isPlayer ? 1 : .5);
             const rate = 1/fireRate;
@@ -481,6 +482,16 @@ class Weapon extends EngineObject
                 // alert enemies
                 this.parent.isPlayer && alertEnemies(this.pos, this.pos);
             }
+	} else if (this.type  == 2) {
+	    const rate = 2;
+	    this.parent.canmove = false;
+            for(; this.fireTimeBuffer > 0; this.fireTimeBuffer -= rate)
+            {
+	         const killray = new Deathray(this.pos, this.parent);
+                 playSound(sound_shoot, this.pos);
+	    }
+	    this.parent.canmove = true
+	}
         }
         else
             this.fireTimeBuffer = min(this.fireTimeBuffer, 0);
@@ -592,5 +603,82 @@ class Bullet extends EngineObject
     {
         drawRect(this.pos, vec2(.4,.5), new Color(1,1,1,.5), this.velocity.angle());
         drawRect(this.pos, vec2(.2,.5), this.color, this.velocity.angle());
+    }
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+class Deathray extends EngineObject 
+{
+    constructor(pos, attacker) 
+    { 
+	super(pos.add(vec2(0,.1)),vec2(10,.1))
+	this.mirror = attacker.mirror;
+	this.pos.x += this.mirror ? -5.468 : 5.468
+        this.color = new Color(1,0,0,1);
+        this.setCollision();
+
+        this.damage = this.damping = 1;
+        this.gravityScale = 0;
+        this.attacker = attacker;
+        this.team = attacker.team;
+        this.renderOrder = 1e9;
+        this.range = 10;
+	this.life = 0;
+	this.baf = 0;
+
+    }
+
+    update()
+    {
+	this.life +=1;
+	if (this.life == 45) {
+	     this.destroy();
+	}
+	if (this.attacker.velocity.x != 0 || this.attacker.velocity.y != 0) {
+	     this.baf += 1;
+	     if (this. baf == 5) {
+		this.destroy();
+	     }
+	}
+        super.update();	
+
+        // check if hit someone
+        forEachObject(this.pos, this.size, (o)=>
+        {
+            if (o.isGameObject && !o.parent && o.team != this.team)
+            if (!o.dodgeTimer || !o.dodgeTimer.active())
+                this.collideWithObject(o)
+        });
+    }
+    
+    collideWithObject(o)
+    {
+        if (o.isGameObject)
+        {
+            o.damage(1e3, this);
+            if (o.isCharacter)
+            {
+                playSound(sound_walk, this.pos);
+            }
+        }
+
+        return 1; 
+    }
+
+    collideWithTile(data, pos)
+    {
+        if (data <= 0)
+            return 0;
+            
+        const destroyTileChance = 1;
+        rand() < destroyTileChance && destroyTile(pos);
+
+        return 1; 
+    }
+
+    render()
+    {
+        drawRect(this.pos, this.size, this.color);
     }
 }
