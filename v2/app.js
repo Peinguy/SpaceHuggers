@@ -207,7 +207,7 @@ mainContext.fillStyle = new Color(0,0,0,p).rgba();
     }
 
     mainContext.font = '35px "Press Start"';
-    p > 0 && mainContext.fillText('A JS13K Game by Frank Force, Drass Mangy, and WM',mainCanvas.width/2, 210);
+    p > 0 && mainContext.fillText('Frank Force, Drass Mangy, and WM',mainCanvas.width/2, 210);
     // check if any enemies left
     let enemiesCount = 0;
     for (const o of engineCollideObjects)
