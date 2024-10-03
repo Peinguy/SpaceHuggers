@@ -358,12 +358,12 @@ class Character extends GameObject
 
 ///////////////////////////////////////////////////////////////////////////////
 
-const type_weak   = 5;
+const type_weak   = 0;
 const type_normal = 1;
 const type_strong = 2;
 const type_elite  = 3;
 const type_grenade= 4;
-const type_ray    = 0;
+const type_ray    = 5;
 const type_count  = 6;
 
 function alertEnemies(pos, playerPos)
@@ -422,7 +422,7 @@ class Enemy extends Character
         }
 	else if (this.type == type_ray)
         {
-            this.color = new Color(1,.6,0);
+            this.color = new Color(1,.3,0);
             this.eyeColor = new Color(1,1,1);
 	    this.wtype = 2;
 	    this.maxVisionRange = 10;
@@ -523,7 +523,7 @@ class Enemy extends Character
                 this.pressedDodge = 1;
             else if (this.groundObject)
                 this.pressedDodge = rand() < .005;
-        }
+	}
         else if (this.sawPlayerTimer.isSet() && this.sawPlayerTimer.get() < 10)
         {
             debugAI && debugPoint(this.sawPlayerPos, '#f00');
@@ -535,8 +535,8 @@ class Enemy extends Character
                 this.climbingWall = 1;
                 this.pressedJumpTimer.set(.1);
                 this.holdJumpTimer.set(rand(.2));
-            }
-            
+            } 
+
             const timeSinceSawPlayer = this.sawPlayerTimer.get();
             this.weapon.localAngle *= .8;
 	    if (this.weapon.type == 2) {
@@ -554,9 +554,9 @@ class Enemy extends Character
                 if (!this.dodgeTimer.active())
                 {
                     const playerDirection = sign(this.sawPlayerPos.x - this.pos.x);
-                    if (this.type == type_grenade && rand() < .002 && this.getMirrorSign() == playerDirection)
+                    if (this.type == type_grenade && rand() < .002 && this.getMirrorSign() == playerDirection) {
                         this.pressingThrow = 1;
-                        
+		    }
                     // actively fighting player
                     if (rand()<.05)
                         this.facePlayerTimer.set(rand(2,.5));
@@ -619,7 +619,7 @@ class Enemy extends Character
         {
             // try to act normal
             if (rand()<.03)
-                this.moveInput.x = 0;
+                 this.moveInput.x = 0;
             else if (rand()<.005)
                 this.moveInput.x = randSign()*rand(.2, .1);
             else if (rand()<.001)
@@ -775,13 +775,13 @@ class Player extends Character
         }
 
         // wall climb
-        this.climbingWall = 0;
+        this.climbingWall = 0; {
         if (this.moveInput.x && !this.velocity.x && this.velocity.y < 0)
         {
             this.velocity.y *=.8;
             this.climbingWall = 1;
-        }
-
+        } 
+	}
         // movement control
         this.moveInput.x = isUsingGamepad || this.playerIndex ? gamepadStick(0, this.playerIndex).x : keyIsDown(39) - keyIsDown(37);
 
@@ -794,7 +794,6 @@ class Player extends Character
         else if (!this.wasHoldingJump || this.climbingWall)
             this.pressedJumpTimer.set(.3);
         this.wasHoldingJump = this.holdingJump;
-
         // controls
         this.holdingShoot  = !this.playerIndex && (mouseIsDown(0) || keyIsDown(90)) || gamepadIsDown(2, this.playerIndex);
         this.pressingThrow = !this.playerIndex && (mouseIsDown(2) || keyIsDown(67)) || gamepadIsDown(1, this.playerIndex);
