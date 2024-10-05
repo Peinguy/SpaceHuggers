@@ -483,7 +483,7 @@ class Weapon extends EngineObject
                 this.parent.isPlayer && alertEnemies(this.pos, this.pos);
             }
 	} else if (this.type  == 2) {
-	    const rate = 2;
+	    const rate = 1.5;
 	    this.parent.canmove = false;
             for(; this.fireTimeBuffer > 0; this.fireTimeBuffer -= rate)
             {
